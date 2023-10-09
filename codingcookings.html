@@ -1,93 +1,223 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>코딩쿠킹스 팀원 소개 페이지</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-      crossorigin="anonymous"
-    />
-    <style>
-      .team-cards {
-        width: 600px;
-        margin: 20px auto 20px auto;
-      }
 
-      .card {
-        border-radius: 15px;
-      }
-      .card > button {
-        margin: 10px;
-      }
-      .card > img {
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        height: 200px;
-        padding: 5px;
-      }
-      .card-text {
-        margin: 10px auto 20px auto;
-      }
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+
+    <title>A4조 팀원소개</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap');
+
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        .mytitle {
+            background-color: green;
+            color: white;
+
+            height: 250px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://img.freepik.com/premium-photo/a-frame-of-vegetables-and-herbs-on-a-light-table-cooking-background-view-from-above-cooking-ingredients-background-menu-of-the-table-copy-space_88526-1608.jpg');
+            background-position: center;
+            background-size: cover;
+        }
+
+        .mytitle>button {
+            width: 150px;
+            height: 50px;
+            background-color: transparent;
+           
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+
+            border: 1px solid white;
+            margin-top: 20px;
+        }
+
+        .mycards {
+            margin: 20px auto 20px auto;
+            width: 1200px;
+        }
+
+        .card-img-top {
+            width: 250px;
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            margin: 15px auto 0;
+        }
+
+        .mypostbox {
+            width: 500px;
+            margin: 20px auto 20px auto;
+            padding: 20px 20px 20px 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 3px 0px blue;
+        }
+
+        .mybtn {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            margin-top: 10px;
+        }
+
+        .mybtn>button {
+            margin-right: 10px;
+        }
     </style>
     <script>
-      $(document).ready(function () {
-        let teamListHtml = ``;
-        fetch(
-          "https://sprata-team-project-default-rtdb.asia-southeast1.firebasedatabase.app/members.json"
-        )
-          .then((res) => res.json())
-          .then((members) => {
-            let keys = Object.keys(members);
-            console.log(keys);
-            keys.forEach((key) => {
-                console.log(members[key])
-              let name = members[key].name;
-              let once = members[key].once;
-              let imageUrl = members[key].imageUrl;
-              teamListHtml = ` <div class="col">
-            <div class="card h-100 shadow-lg bg-body">
-              <img
-                src="${imageUrl}"
-                class="card-img-top border border-3 border-dark"
-                alt="팀원 쿠키 이미지"
-              />
-              <div class="card-body">
-                <h5 class="card-title" style="text-align: center;">${name}</h5>
-                <div class="h2 pb-1 mb-1 border-bottom" style="text-align: center; font-size: medium;"></div>
-                <p class="card-text">${once}</p>
-              </div>
-              <button type="button" class="btn btn-primary">자세히 보기</button>
-            </div>
-          </div>`;
-              $("#member-card").append(teamListHtml);
-            });
-          });
-      });
+        function name(params) {
+            let a = []
+            $('#q1').append(temp_html)
+        }
     </script>
-  </head>
 
-  <body>
-    <div class="team-cards">
-      <div id="member-card" class="row row-cols-1 row-cols-md-3 g-4">
-   <!--     <div class="col">
-          <div class="card h-100">
-            <img
-              src="https://movie-phinf.pstatic.net/20210728_221/1627440327667GyoYj_JPEG/movie_image.jpg"
-              class="card-img-top"
-              alt="..."
-            />
-            <div class="card-body">
-              <h5 class="card-title">영화제목</h5>
-              <p class="card-text">⭐⭐⭐</p>
-              <p class="card-text">영화 코멘트</p>
-            </div>
-          </div>
-        </div>
-      </div> -->
+</head>
+
+<body>
+    <div class="mytitle">
+        <h1>코딩쿠킹스</h1>
     </div>
-  </body>
+    <div>
+         <img src="https://media.istockphoto.com/id/1346426433/photo/cute-blue-robot-holding-serving-cloche-3d.jpg?s=612x612&w=0&k=20&c=u6T8xFueGlv-M2Neqxu1EVV5PL7abyj-dybPRaIv2-A=">
+    </div>   
+    <div>
+        <p>안녕하세요! 저희는 코딩을 요리하는 사람들의 모임인 코딩쿠킹스 입니다!</p>
+        <P>고객만족의 만족을 위해 코드 하나하나 정성스럽게 조리하여 훌륭한 프로젝트로 보여드리겠습니다</P>
+        <P>그럼 저희 쉐프님들을 만나러 가보실까요?</P>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary btn-lg">쉐프로 참여하기</button>
+    </div>
+
+
+
+    <div class="mypostbox">
+
+        <h4>쉐프님 어서오세요!</h4>
+
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">이미지를 넣어줘</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">이름을 넣어줘</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">MBTI를 넣어줘</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">블로그를 넣어줘</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">한마디를 넣어줘</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">자기소개를 넣어줘</label>
+        </div>
+
+        <div class="mybtn">
+            <button type="button" class="btn btn-primary">참여하기</button>
+            <button type="button" class="btn btn-outline-primary">나가기</button>
+        </div>
+    </div>
+
+    <div class="mycards">
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            <div class="col">
+                <div class="card h-100">
+                    <img src="https://images.unsplash.com/photo-1446768500601-ac47e5ec3719?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1446&q=80"
+                        class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">이름</h5>
+                        <p class="card-text">내용</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">자세히</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100">
+                    <img src="https://images.unsplash.com/photo-1446768500601-ac47e5ec3719?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1446&q=80"
+                        class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">이름</h5>
+                        <p class="card-text">내용</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">자세히</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100">
+                    <img src="https://images.unsplash.com/photo-1446768500601-ac47e5ec3719?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1446&q=80"
+                        class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">이름</h5>
+                        <p class="card-text">내용</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">자세히</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100">
+                    <img src="https://images.unsplash.com/photo-1446768500601-ac47e5ec3719?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1446&q=80"
+                        class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">이름</h5>
+                        <p class="card-text">내용</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary">자세히</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="useraddmain">
+
+
+    </div>
+</body>
+
 </html>
