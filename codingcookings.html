@@ -115,7 +115,39 @@
       .card-text {
         margin: 10px auto 20px auto;
       }
+      
+      .myTeamMember {
+            background-color: white;
+            width : 500px;
+            margin : 20px auto 0px auto;
+            border : 1px gray;
+            padding : 20px;
+            box-shadow: 2px 2px 2px 2px gray;
+            border-radius: 5px;
+        }
+        .form-floating > label {
+            color: black;
+        }
+        .input-group > label {
+            background-color: transparent;
+            color: white;
+        }
+        .mybtn {
+            display: flex;
+            flex-direction: row;
+            align-items: right;
+            justify-content: right;
+        }
+
+        .mybtn>button {
+            margin-right: 5px;
+        }
+        .input-group > label {
+            background-color: transparent;
+            color: white;
+        }
     </style>
+   
     <script>
       $(document).ready(function () {
         let teamListHtml = ``;
@@ -152,7 +184,36 @@
             let a = [];
             $("#q1").append(temp_html);
         }
-    </script>
+      
+      // firebase 기본 정보 생략
+        
+    $("#postingbtn").click(async function () {
+        let imageUrl = $('#imageUrl').val();
+        let name = $('#name').val();
+        let mbti = $('#mbti').val();
+        let blogUrl = $('#blogUrl').val();
+        let once = $('#once').val();
+        let bio = $('#bio').val();
+
+        let doc = {
+            'imageUrl': imageUrl,
+            'name': name,
+            'mbti': mbti,
+            'blogUrl': blogUrl,
+            'once': once,
+            'bio' : bio
+        };
+        await addDoc(collection(db, "miniProject"), doc);
+        alert('저장 완료!');
+        window.location.reload();
+    })
+    // 명명규칙 이름 : name, 이미지 주소 : imageUrl, 블로그 주소 blogUrl : blogUrl, mbti : mbti
+    // db, "miniProject" -> 가명
+
+    $("#savebtn").click(async function () {
+        $('#postingbox').toggle();
+    })    
+    </script> 
 </head>
 
 <body>
