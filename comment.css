@@ -1,5 +1,6 @@
 .comment-form {
   /* 자식 요소들 다 부모 높이에 맞춤 */
+  width: 820px;
   height: 100px;
   margin-top: 10px;
 }
@@ -19,13 +20,12 @@
   height: 100%;
 }
 
-.comment {
-  padding: 10 10 10 10;
-}
+/*.comment {
+}*/
 
 .comment-wrapper {
+  width:800px;
   margin-top: 10px;
-  padding: 10 10 10 10;
-  background-color: #cccccc;
+  background-color: gainsboro;
   border-radius: 5px;
 }

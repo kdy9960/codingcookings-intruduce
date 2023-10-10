@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>멤버 상세 정보</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet"/>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -13,13 +13,31 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
+    <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+    crossorigin="anonymous"
+  />
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+    crossorigin="anonymous"
+  ></script>
+  <!-- 제이쿼리 받기 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+
+    <!-- Font Awesome 아이콘 라이브러리 로드 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="member.css">
+    <link rel="stylesheet" href="comment.css">
 </head>
 
 <body onload='loadMemberInfo()'>
 <div id='member-info'></div>
 
 <!-- Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden=true">
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
   <div class= "modal-dialog">
      <div class= "modal-content">
         <div class= "modal-header">
@@ -33,5 +51,230 @@
 </div>
 
 <script src='./member.js'></script>
+<script>
+const firebaseConfig = {
+   databaseURL:
+     "https://sparta-33d77-default-rtdb.asia-southeast1.firebasedatabase.app",
+ };
 
+
+ // DB에서 가장 최근에 등록된 댓글 가져와서 페이지에 댓글 추가하기
+ async function fetchLastCommentByRest() {
+   const username = $("#username").text() || "테스트유저";
+   const options = {
+     method: "GET",
+     headers: {
+       "Content-Type": "application/json",
+     },
+   };
+   const response = fetch(
+     firebaseConfig.databaseURL +
+       `/comments.json?orderBy="username"&equalTo="${username}"`,
+     options
+   ).then((response) => {
+     response
+       .json()
+       .then((comments) => {
+         const commentEntries = Object.entries(comments);
+         // 댓글 빨리 단 순으로 정렬
+         commentEntries.sort((a, b) => {
+           const dateA = a[1].createdAt;
+           const dateB = b[1].createdAt;
+           return convertToDate(dateB) - convertToDate(dateA);
+         });
+         // 댓글 하나만 생성
+         const [key, value] = commentEntries[0];
+         createCommentDiv(key, value);
+       })
+       .catch((error) => {
+         console.error("fetch comment by rest: " + error);
+       });
+   });
+ }
+
+ // DB에서 댓글 전부 가져오고 페이지에도 등록함
+ async function fetchCommentsByRest() {
+   const username = $("#username").text() || "테스트유저";
+   const options = {
+     method: "GET",
+     headers: {
+       "Content-Type": "application/json",
+     },
+   };
+
+   const response = fetch(
+     firebaseConfig.databaseURL +
+       `/comments.json?orderBy="username"&equalTo="${username}"`,
+     options
+   ).then((response) => {
+     response
+       .json()
+       .then((comments) => {
+         const commentEntries = Object.entries(comments);
+         // 댓글 빨리 단 순으로 정렬
+         commentEntries.sort((a, b) => {
+           const dateA = a[1].createdAt;
+           const dateB = b[1].createdAt;
+           return convertToDate(dateA) - convertToDate(dateB);
+         });
+         // 댓글 모두 생성
+         commentEntries.forEach(([key, value]) => {
+           createCommentDiv(key, value);
+         });
+       })
+       .catch((error) => {
+         console.error("fetch comment by rest: " + error);
+       });
+   });
+ }
+
+ // DB에 댓글 등록하고 페이지에도 등록함
+ async function submitCommentByRest() {
+   const commentAuthor = $("#comment-name").val();
+   const content = $("#comment-content").val();
+   const username = $("#username").text() || "테스트유저";
+   const createdAt = new Date().toLocaleString();
+
+   const data = {
+     username: username,
+     commentAuthor: commentAuthor,
+     content: content,
+     createdAt: createdAt,
+   };
+   const options = {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+     },
+     body: JSON.stringify(data),
+   };
+   try {
+     await fetch(firebaseConfig.databaseURL + "/comments.json", options);
+     console.log("comment added by rest");
+     clearCommentForm();
+     await fetchLastCommentByRest();
+   } catch (error) {
+     console.error("comment add by rest" + error);
+   }
+ }
+
+ // DB에서 댓글 수정하고 댓글 리스트에서도 수정
+ async function updateCommentByRest() {
+   const commentKey = $(".click-update").data("functionArg");
+   const data = {
+     content: $("#comment-update-content").val(),
+   };
+   const options = {
+     method: "PATCH",
+     headers: {
+       "Content-Type": "application/json",
+     },
+     body: JSON.stringify(data),
+   };
+   try {
+     await fetch(
+       firebaseConfig.databaseURL + `/comments/${commentKey}.json`,
+       options
+     );
+     console.log("update comment by rest!");
+     $(".click-update").find("p.fs-5").text(data.content);
+
+     clearClickedClass();
+   } catch (error) {
+     console.error("update comment by rest" + error);
+   }
+ }
+
+ // 수정하기 버튼 누르면 댓글 식별값 표시하고 수정 폼에 현재 댓글 내용 입력
+ function updateButtonClicked(commentKey) {
+   $(`[data-function-arg="${commentKey}"]`).addClass("click-update");
+   const comment = $(`[data-function-arg="${commentKey}"]`)
+     .find("p.fs-5")
+     .text();
+   $("#comment-update-content").val(comment);
+   $("#exampleModal").on("hidden.bs.modal", function (e) {
+     clearClickedClass();
+   });
+ }
+
+ // 수정 모달에서 취소 식별값 삭제
+ function clearClickedClass() {
+   $(".click-update").removeClass("click-update");
+ }
+
+ // DB에서 댓글 삭제하고 댓글 리스트에서도 삭제
+ async function deleteCommentByRest(commentKey) {
+   const options = {
+     method: "DELETE",
+     headers: {
+       "Content-Type": "application/json",
+     },
+   };
+   try {
+     await fetch(
+       firebaseConfig.databaseURL + `/comments/${commentKey}.json`,
+       options
+     );
+     console.log("delete comment by rest!");
+     clearComment(commentKey);
+   } catch (error) {
+     console.error("delete comment by rest " + error);
+   }
+ }
+
+ // 페이지에 댓글 하나 추가하기
+ function createCommentDiv(key, comment) {
+   const commentDivTemplate = `<div class="comment-wrapper" data-function-arg="${key}"><div class="row justify-content-between">
+   <div class="col-2"><p class="text-start fs-4">${comment.commentAuthor}</p></div>
+   <div class="col-2">
+     <p class="text-end">
+       <button type="button" data-bs-toggle="modal" data-bs-target="#commentModal"
+       class="btn" onclick="updateButtonClicked('${key}')">수정</button>
+       <button type="button" class="btn" onclick="deleteCommentByRest('${key}')">삭제</button>
+     </p>
+   </div>
+ </div>
+ <div class="row">
+   <div class="col-12">
+     <p class="text-start fs-5">${comment.content}</p>
+   </div>
+ </div>
+ <div class="row">
+   <div class="col-3"><p class="text-start fs-6">${comment.createdAt}</p></div>
+ </div></div>`;
+   $(".comments").append(commentDivTemplate);
+ }
+
+ // 날짜 문자열을 Date 객체로 변환
+ function convertToDate(str) {
+   const [datePart, timePart] = str.split(" 오후 ");
+   const [year, month, day] = datePart.split(". ").map(Number);
+   const [hour, minute, second] = timePart.split(":").map(Number);
+
+   const convertedHour = hour === 12 ? hour : hour + 12;
+   const date = new Date(
+     Date.UTC(year, month - 1, day, convertedHour, minute, second)
+   );
+
+   return date;
+ }
+
+ // 댓글 리스트에서 댓글 삭제
+ function clearComment(commentKey) {
+   $(`[data-function-arg="${commentKey}"]`).remove();
+ }
+
+ // 댓글 폼 내용 삭제
+ function clearCommentForm() {
+   $("#comment-name").val("");
+   $("#comment-content").val("");
+ }
+
+ $(".comment-submit-button").on("click", submitCommentByRest);
+  window.updateComment = updateCommentByRest;
+  window.deleteComment = deleteCommentByRest;
+  window.updateButtonClicked = updateButtonClicked;
+  window.clearClickedClass = clearClickedClass;
+
+</script>
 </body></html>

@@ -1,0 +1,78 @@
+@import url("https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap");
+
+* {
+    font-family: "Gowun Dodum", sans-serif;
+}
+.member-info-container {
+    display: flex;
+    width: 80%;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.member-details {
+    display: flex;
+    align-items: flex-start;
+}
+
+.action-buttons button{
+    width: 50px;
+    height: 50px;
+
+    background-color : white;
+    color : black ;
+    border:none; 
+    padding : 5px 10px; 
+
+}
+.fas {
+    size: 100%;
+}
+
+.action-buttons button:hover{
+    background-color : gray ; 
+    cursor:pointer;  
+}
+.section-container {
+    
+    width: 80%;
+    margin-top: 20px;
+
+}
+
+.section-heading {
+    background-color:#7d7a7a ;
+    color:white ;
+    padding :10px ;
+}
+
+.section-content {
+    background-color:white ;
+    color:black;
+    padding :10px ;
+}
+.member-image {
+    width:200px ;
+    margin-right:20px ;
+}
+#member-info {
+   width: 1000px;
+   margin: 50px auto 0px auto;
+}
+.member-details {
+   padding-top: 20px;
+}
+.member-details-content {
+    padding-top: 30px;
+}
+.member-image {
+   width: 200px;
+   height: 200px;
+
+   border: solid;
+   border-color: gainsboro;
+   border-radius: 10px;
+}
+.section-container > h2 {
+    border-radius: 10px;
+}

@@ -11,7 +11,7 @@ function loadMemberInfo() {
     let memberId = getParameterByName('id');
 
     fetch(
-        "https://sprata-team-project-default-rtdb.asia-southeast1.firebasedatabase.app/members.json"
+        "https://sparta9960-b0b8c-default-rtdb.asia-southeast1.firebasedatabase.app/members.json"
     )
         .then((res) => res.json())
         .then((members) => {
@@ -19,68 +19,146 @@ function loadMemberInfo() {
 
             // 멤버의 상세 정보를 HTML 요소로 만듭니다.
             let memberInfoHtml = `
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <div style="display: flex; align-items: flex-start;">
-                        <img src="${member.imageUrl}" alt="팀원 이미지" style="width: 200px; margin-right: 20px;" />
-                        
-                        <div>
-                            <p id="username">이름: ${member.name}</p>
-                            <p>MBTI: ${member.mbti}</p>
-                            <p>블로그 URL:${member.blogUrl}</p>
-                        </div>
+                <div class="member-info-container">
+                <div class="member-details">
+                    <img src="${member.imageUrl}" alt="팀원 이미지" class="member-image" />
+                    
+                    <div class="member-details-content">
+                        <p id="username">이름 : ${member.name}</p>
+                        <p>MBTI : ${member.mbti}</p>
+                        <p>블로그 URL : ${member.blogUrl}</p>
                     </div>
+                </div>
 
-                    <!-- 수정 및 삭제 버튼 추가 -->
-                    <div>
-                        <!-- 'editMember' 함수 호출 및 모달 표시 -->
-                        <button onclick='editMember("${memberId}")' data-toggle='modal' data-target='#editModal'>수정</button>
+                <!-- 수정 및 삭제 버튼 추가 -->
+                <div class="action-buttons">
+                    <!-- 'editMember' 함수 호출 및 모달 표시 -->
+                    <button onclick='editMember("${memberId}")' data-toggle='modal' data-target='#editModal'><i class="fas fa-edit"></i></button>
 
-                        <!-- 'deleteMember' 함수 호출 -->
-                        <button onclick='deleteMember("${memberId}")'>삭제</button>
+                    <!-- 'deleteMember' 함수 호출 -->
+                    <button onclick='deleteMember("${memberId}")'><i class="fas fa-trash-alt"></i></button>
 
-                        <button onclick='goBack()'>돌아가기</button>
-                    </div>
+                    <button onclick='goBack()'><i class="fas fa-arrow-left"></i></button>
+                </div>
 
                 </div>
 
                 <!-- 한마디와 자기소개 섹션 추가 -->
-                <div style="margin-top: 20px;">
-                    <h2>한마디</h2>
-                    <p>${member.once}</p>
+                <div class="section-container">
+                    <h2 class="section-heading">한마디</h2>
+                    <p class="section-content">${member.once}</p>
 
-                    <h2>자기소개</h2>
-                    <p>${member.bio}</p>
-                </div>`;
+                    <h2 class="section-heading">자기소개</h2>
+                    <p class="section-content">${member.bio}</p>
+                </div>
+                
+                <div></div>`;
+                
+            const commentDiv = `
+            <div class="container text-center">
+             <div class="row comment-form">
+               <div class="col-2">
+                 <input
+                   class="form-control comment-name-input"
+                   type="text"
+                   placeholder="이름"
+                   id="comment-name"
+                   aria-label="default input example"
+                 />
+               </div>
+               <div class="col-8">
+                 <textarea
+                   class="form-control comment-content-input"
+                   placeholder="내용을 입력해주세요!"
+                   id="comment-content"
+                 ></textarea>
+               </div>
             
+               <div class="col-2">
+                 <button type="button" onclick="submitCommentByRest()" class="btn btn-primary comment-submit-button">
+                   등록
+                 </button>
+               </div>
+             </div>
+            </div>
+            
+            <div class="container text-center comments"></div>
+            
+            <div
+             class="modal fade"
+             id="commentModal"
+             tabindex="-1"
+             aria-labelledby="commentModalLabel"
+             aria-hidden="true"
+            >
+             <div class="modal-dialog modal-dialog-centered">
+               <div class="modal-content">
+                 <div class="modal-header">
+                   <h1 class="modal-title fs-5" id="commentModalLabel">댓글 수정하기</h1>
+                   <button
+                     type="button"
+                     class="btn-close"
+                     data-bs-dismiss="modal"
+                     aria-label="Close"
+                   ></button>
+                 </div>
+                 <div class="modal-body">
+                   <textarea
+                     class="form-control comment-content-input"
+                     id="comment-update-content"
+                   ></textarea>
+                 </div>
+                 <div class="modal-footer">
+                   <button
+                     type="button"
+                     class="btn btn-secondary"
+                     onclick="clearClickedClass()"
+                     data-bs-dismiss="modal"
+                   >
+                     취소
+                   </button>
+                   <button
+                     type="button"
+                     class="btn btn-primary"
+                     data-bs-dismiss="modal"
+                     onclick="updateComment()"
+                   >
+                     수정하기
+                   </button>
+                 </div>
+               </div>
+             </div>
+            </div>`;
             // 'member-info' div에 멤버의 상세 정보를 추가합니다.
-            document.getElementById('member-info').innerHTML = memberInfoHtml;
-        });
+            document.getElementById('member-info').innerHTML = memberInfoHtml + commentDiv;
+            fetchCommentsByRest();
+        }
+        );
 }
 function editMember(memberId) {
     // 현재 멤버의 정보를 가져옵니다.
-    fetch(`https://sprata-team-project-default-rtdb.asia-southeast1.firebasedatabase.app/members/${memberId}.json`)
+    fetch(`https://sparta9960-b0b8c-default-rtdb.asia-southeast1.firebasedatabase.app/members/${memberId}.json`)
         .then((res) => res.json())
         .then((member) => {
             // 현재 멤버의 정보로 기본 값을 설정한 수정 form을 만듭니다.
             let editFormHtml = `
-                <form id="edit-form">
-                    <label for="name">이름:</label>
-                    <input type="text" id="name" name="name" value="${member.name}"><br>
-                    <label for="mbti">MBTI:</label>
-                    <input type="text" id="mbti" name="mbti" value="${member.mbti}"><br>
-                    <label for="blogUrl">블로그 URL:</label>
-                    <input type="text" id="blogUrl" name ="blogUrl"value="${member.blogUrl}"><br> 
-                    <label for="once">한마디 :</label>
-                    <input type ="text" id="once" value="${member.once}"><br/> 
-                    <label for="bio">자기소개 :</label><br/>
-                    <textarea id= "bio">${member.bio}</textarea><br/>  
-                </form>`;
+        <div id="inputBox">
+            <div class="input-form-box"><span>이름 </span><input type="text" id="name" name="name"  value="${member.name}" class="form-control" disabled readonly></div>
+            <div class="input-form-box"><span>MBTI </span><input type="text" id="mbti" name="blog"  value="${member.mbti}" class="form-control"></div>
+            <div class="input-form-box"><span>블로그 </span><input type="text" id="blogUrl" name="blog" value="${member.blogUrl}" class="form-control"></div>
+            <div class="input-form-box"><span>한마디 </span><input type="text" id="once" name="once" value="${member.once}" class="form-control"></div>
+            <div class="mb-3">
+            <label for="bio" class="form-label">자기소개</label>
+            <textarea class="form-control" id="bio" rows="3">${member.bio}</textarea>
+        </div>`;
             
             document.getElementById('edit-form-container').innerHTML = editFormHtml;
             
             // 'Submit' 버튼도 추가합니다.
             document.getElementById('edit-form-container').innerHTML += `
-                <button onclick='updateMemberInfo("${memberId}")'>Submit</button>`;
+            <div class="button-input-box" >
+            <button type="button" onclick='updateMemberInfo("${memberId}")' class="btn btn-primary btn-xs" style="width:100%">확인</button>
+          </div>`;
         });
 }
 
@@ -92,8 +170,8 @@ function updateMemberInfo(memberId) {
     // '한마디'와 '자기소개' 정보도 가져옵니다.
     let newOnce = document.getElementById('once').value;
     let newBio = document.getElementById('bio').value;
-
-     fetch(`https://sprata-team-project-default-rtdb.asia-southeast1.firebasedatabase.app/members/${memberId}.json`, {
+    var modal = new bootstrap.Modal(document.getElementById('editModal'));
+     fetch(`https://sparta9960-b0b8c-default-rtdb.asia-southeast1.firebasedatabase.app/members/${memberId}.json`, {
          method: 'PATCH',
          body: JSON.stringify({
              name: newName,
@@ -117,7 +195,12 @@ function updateMemberInfo(memberId) {
         alert("수정이 완료되었습니다.");
 
         // 모달 창을 닫습니다.
-        $('#editModal').modal('hide');
+        var editModal = document.getElementById('editModal')
+        var modal = bootstrap.Modal.getInstance(editModal);
+        
+        if (modal) {
+            modal.hide();
+        }
      })
      .catch((error) => console.error('Error:', error));
 }
@@ -126,28 +209,31 @@ function updateMemberInfo(memberId) {
 function deleteMember(memberId) {
     // 삭제할 멤버의 이름을 입력받습니다.
     let inputName = prompt("정말로 삭제하시겠습니까?, 삭제하실거면 이름을 입력하세요:");
-
+    if (inputName === null || inputName === "") {
+        return;  
+    }
     // Firebase 데이터베이스에서 해당 멤버 정보를 가져옵니다.
-    fetch(`https://sprata-team-project-default-rtdb.asia-southeast1.firebasedatabase.app/members/${memberId}.json`)
+    fetch(`https://sparta9960-b0b8c-default-rtdb.asia-southeast1.firebasedatabase.app/members/${memberId}.json`)
         .then((res) => res.json())
         .then((member) => {
             // 입력받은 이름이 실제 멤버의 이름과 일치하는지 확인합니다.
             if (inputName !== member.name) {
                 alert("입력한 이름이 잘못되었습니다. 다시 시도해주세요.");
-                return;
+                return Promise.reject(); 
             }
 
             // Firebase 데이터베이스에서 기존 멤버 정보를 삭제합니다.
-            return fetch(`https://sprata-team-project-default-rtdb.asia-southeast1.firebasedatabase.app/members/${memberId}.json`, {
+            return fetch(`https://sparta9960-b0b8c-default-rtdb.asia-southeast1.firebasedatabase.app/members/${memberId}.json`, {
                 method: 'DELETE',
             });
         })
         .then((res) => res && res.json())
         .then((data) => {
-            if (data === null) return;  // 만약 앞서서 프로세스가 중단되었다면 아무 것도 하지 않습니다.
+            if (data === null)  
             alert("삭제 성공");
             // 변경된 멤버 정보를 다시 불러옵니다.
             loadMemberInfo();
+            window.location.href = 'codingcookings.html';
         })
         .catch((error) => console.error('Error:', error));
 }
