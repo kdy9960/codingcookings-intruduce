@@ -24,7 +24,7 @@ function loadMemberInfo() {
                         <img src="${member.imageUrl}" alt="팀원 이미지" style="width: 200px; margin-right: 20px;" />
                         
                         <div>
-                            <p>이름: ${member.name}</p>
+                            <p id="username">이름: ${member.name}</p>
                             <p>MBTI: ${member.mbti}</p>
                             <p>블로그 URL:${member.blogUrl}</p>
                         </div>

@@ -158,11 +158,31 @@
         }
     </style>
 
-    <script>
+    <script type="module">
+        // Firebase SDK 라이브러리 가져오기
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+
+    //Firebase 구성 정보 설정
+    const firebaseConfig = {
+    apiKey: "AIzaSyA6siWgtmBO-odZp9lcTRmpv1BQjFb9yKA",
+    authDomain: "sparta-1441b.firebaseapp.com",
+    projectId: "sparta-1441b",
+    storageBucket: "sparta-1441b.appspot.com",
+    messagingSenderId: "202829972123",
+    appId: "1:202829972123:web:38cd9b510a5f7e1437fc3e"
+    };
+
+    // Firebase 인스턴스 초기화
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
         $(document).ready(function () {
             let teamListHtml = ``;
             fetch(
-                "https://sprata-team-project-default-rtdb.asia-southeast1.firebasedatabase.app/members.json"
+                "https://sparta9960-b0b8c-default-rtdb.asia-southeast1.firebasedatabase.app/"
             )
                 .then((res) => res.json())
                 .then((members) => {
@@ -181,7 +201,7 @@
                 <div class="h2 pb-1 mb-1 border-bottom" style="text-align: center; font-size: medium;"></div>
                 <p class="card-text">${once}</p>
               </div>
-              <button type="button" class="btn btn-primary">자세히 보기</button>
+              <button id="detailbtn" type="button" class="btn btn-primary">자세히 보기</button>
             </div>
           </div>`;
 
@@ -198,6 +218,7 @@
 	// $(".modal").on("shown.bs.modal", function () {		
 	// 	$("#postingbox").focus();
 	// });
+
 
     </script>
     <script type="module">
@@ -219,9 +240,27 @@
                 'once': once,
                 'bio': bio
             };
-            await addDoc(collection(db, "miniProject"), doc);
-            alert('저장 완료!');
-            window.location.reload();
+            /*let json = `{
+                "imageUrl": imageUrl,
+                "name": name,
+                "mbti": mbti,
+                "blogUrl": blogUrl,
+                "once": once,
+                "bio": bio
+            }`*/
+
+            fetch('https://sprata-team-project-default-rtdb.asia-southeast1.firebasedatabase.app/members.json', {
+                method : "POST",
+                headers: {
+                    "Content-Type" : "application/json",
+                },
+                body: JSON.stringify(doc),
+            })
+            .then((res) => res.json())
+            .catch((error) => console.log("error : ", error));
+
+        alert('저장 완료!');
+        window.location.reload();
         })
         // 명명규칙 이름 : name, 이미지 주소 : imageUrl, 블로그 주소 blogUrl : blogUrl, mbti : mbti
         // db, "miniProject" -> 가명
@@ -238,6 +277,12 @@
             $('#join-modal').modal('hide');  // 모달 닫기
         })
         
+        $('#detailbtn').click(() => {
+            $('#editModal').modal('show');  // 모달 열기
+        })    
+        $('#save-close-btn').click(() => {
+            $('#editModal').modal('hide');  // 모달 닫기
+        })
     </script>
 </head>
 
@@ -298,6 +343,14 @@
         </div>
     </div>
 
+    <div id="detail-modal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <ifream src="member.html"></ifream>
+            </div>
+        </div>
+    </div>
+
     <div class="team-cards">
         <div id="member-card" class="row row-cols-1 row-cols-md-4 g-4">
             <!--     <div class="col">
@@ -317,4 +370,30 @@
         </div> -->
         </div>
 
+        <button id="loadModal" class="btn btn-primary">모달버튼</button>
+        <div>
+          class="modal fade"
+          id="myModal"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        </div>
+          <div class="modal-dialog">
+            <div class="modal-content" id="modalContent">
+            </div>
+          </div>
+        </div>
+      <script>
+        $(document).ready(function () {
+          $("#loadModal").click(function () {
+            $.ajax({
+              url: "member.html",
+              success: function (result) {
+                $("#modalContent").html(result);
+                $("#myModal").modal("show");
+              },
+            });
+          });
+        });
+      </script>
 </html>
