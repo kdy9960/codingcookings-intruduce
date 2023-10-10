@@ -41,10 +41,13 @@ async function fetchLastComment() {
       const comments = JSON.parse(JSON.stringify(snapshot.val()));
       // 댓글 늦게 단 순으로 정렬
       const commentEntries = Object.entries(comments);
-      commentEntries.sort((a, b) => a.createdAt - b.createdAt);
+      commentEntries.sort((a, b) => {
+        const dateA = a[1].createdAt;
+        const dateB = b[1].createdAt;
+        return convertToDate(dateB) - convertToDate(dateA);
+      });
       // 댓글 하나만 생성
-      const [key, value] = commentEntries[commentEntries.length - 1];
-      console.log(key, value);
+      const [key, value] = commentEntries[0];
       createCommentDiv(key, value);
     } else {
       console.log("읽은 데이터 없음");
@@ -65,13 +68,15 @@ async function fetchComments() {
 
   try {
     const snapshot = await get(q);
-    console.log(snapshot);
     if (snapshot.exists()) {
       const comments = JSON.parse(JSON.stringify(snapshot.val()));
-      console.log(comments);
       const commentEntries = Object.entries(comments);
       // 댓글 빨리 단 순으로 정렬
-      commentEntries.sort((a, b) => a.createdAt - b.createdAt);
+      commentEntries.sort((a, b) => {
+        const dateA = a[1].createdAt;
+        const dateB = b[1].createdAt;
+        return convertToDate(dateA) - convertToDate(dateB);
+      });
 
       // 댓글 모두 생성
       commentEntries.forEach(([key, value]) => {
@@ -157,6 +162,20 @@ async function deleteComment(commentKey) {
   } catch (error) {
     console.error("delete comment " + error);
   }
+}
+
+// 날짜 문자열을 Date 객체로 변환
+function convertToDate(str) {
+  const [datePart, timePart] = str.split(" 오후 ");
+  const [year, month, day] = datePart.split(". ").map(Number);
+  const [hour, minute, second] = timePart.split(":").map(Number);
+
+  const convertedHour = hour === 12 ? hour : hour + 12;
+  const date = new Date(
+    Date.UTC(year, month - 1, day, convertedHour, minute, second)
+  );
+
+  return date;
 }
 
 // 페이지에 댓글 하나 추가하기

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -79,59 +80,67 @@
 
         .intro-body {
             width: 1200px;
-            margin: 10px auto 10px auto;       
-             /* intro-body 태그 하위의 요소들 이미지, 텍스트div, 버튼 가운데 정렬 */
+            margin: 10px auto 10px auto;
+            /* intro-body 태그 하위의 요소들 이미지, 텍스트div, 버튼 가운데 정렬 */
             display: flex;
-            align-items:center;  
+            align-items: center;
             flex-direction: row;
         }
-        .intro-body > img {
+
+        .intro-body>img {
             width: 500px;
             height: 500px;
             padding: 10px;
-            
+
         }
+
         .join-btn {
             text-align: center;
         }
 
         .team-cards {
-        width: 900px;
-        margin: 20px auto 20px auto;
+            width: 900px;
+            margin: 20px auto 20px auto;
         }
 
-      .card {
-        border-radius: 15px;
-      }
-      .card > button {
-        margin: 10px;
-      }
-      .card > img {
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        height: 200px;
-        padding: 5px;
-      }
-      .card-text {
-        margin: 10px auto 20px auto;
-      }
-      
-      .myTeamMember {
+        .card {
+            border-radius: 15px;
+        }
+
+        .card>button {
+            margin: 10px;
+        }
+
+        .card>img {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            height: 200px;
+            padding: 5px;
+        }
+
+        .card-text {
+            margin: 10px auto 20px auto;
+        }
+
+        .myTeamMember {
             background-color: white;
-            width : 500px;
-            margin : 20px auto 0px auto;
-            border : 1px gray;
-            padding : 20px;
+            width: 500px;
+            margin: 20px auto 0px auto;
+            border: 1px gray;
+            padding: 20px;
             box-shadow: 2px 2px 2px 2px gray;
             border-radius: 5px;
         }
-        .form-floating > label {
+
+        .form-floating>label {
             color: black;
         }
-        .input-group > label {
+
+        .input-group>label {
             background-color: transparent;
             color: white;
         }
+
         .mybtn {
             display: flex;
             flex-direction: row;
@@ -142,28 +151,29 @@
         .mybtn>button {
             margin-right: 5px;
         }
-        .input-group > label {
+
+        .input-group>label {
             background-color: transparent;
             color: white;
         }
     </style>
-   
+
     <script>
-      $(document).ready(function () {
-        let teamListHtml = ``;
-        fetch(
-          "https://sprata-team-project-default-rtdb.asia-southeast1.firebasedatabase.app/members.json"
-        )
-          .then((res) => res.json())
-          .then((members) => {
-            let keys = Object.keys(members);
-            console.log(keys);
-            keys.forEach((key) => {
-                console.log(members[key])
-              let name = members[key].name;
-              let once = members[key].once;
-              let imageUrl = members[key].imageUrl;
-              teamListHtml = ` <div class="col">
+        $(document).ready(function () {
+            let teamListHtml = ``;
+            fetch(
+                "https://sprata-team-project-default-rtdb.asia-southeast1.firebasedatabase.app/members.json"
+            )
+                .then((res) => res.json())
+                .then((members) => {
+                    let keys = Object.keys(members);
+                    console.log(keys);
+                    keys.forEach((key) => {
+                        console.log(members[key])
+                        let name = members[key].name;
+                        let once = members[key].once;
+                        let imageUrl = members[key].imageUrl;
+                        teamListHtml = ` <div class="col">
             <div class="card h-100 shadow-lg bg-body">
               <img src="${imageUrl}" class="card-img-top border border-3 border-dark" alt="팀원 쿠키 이미지"/>
               <div class="card-body">
@@ -175,45 +185,60 @@
             </div>
           </div>`;
 
-              $("#member-card").append(teamListHtml);
-            });
-          });
-      });
+                        $("#member-card").append(teamListHtml);
+                    });
+                });
+        });
 
-      function name(params) {
+        function name(params) {
             let a = [];
             $("#q1").append(temp_html);
         }
-      
-      // firebase 기본 정보 생략
+    // //$("#ipt1").focus();
+	// $(".modal").on("shown.bs.modal", function () {		
+	// 	$("#postingbox").focus();
+	// });
+
+    </script>
+    <script type="module">
+        // firebase 기본 정보 생략
+
+        $("#postingbtn").click(async function () {
+            let imageUrl = $('#imageUrl').val();
+            let name = $('#name').val();
+            let mbti = $('#mbti').val();
+            let blogUrl = $('#blogUrl').val();
+            let once = $('#once').val();
+            let bio = $('#bio').val();
+
+            let doc = {
+                'imageUrl': imageUrl,
+                'name': name,
+                'mbti': mbti,
+                'blogUrl': blogUrl,
+                'once': once,
+                'bio': bio
+            };
+            await addDoc(collection(db, "miniProject"), doc);
+            alert('저장 완료!');
+            window.location.reload();
+        })
+        // 명명규칙 이름 : name, 이미지 주소 : imageUrl, 블로그 주소 blogUrl : blogUrl, mbti : mbti
+        // db, "miniProject" -> 가명
+
+        // $("#savebtn").click(async function () {
+        //     $('#postingbox').toggle();
+        // })    
+
+
+        $('#savebtn').click(() => {
+            $('#join-modal').modal('show');  // 모달 열기
+        })    
+        $('#save-close-btn').click(() => {
+            $('#join-modal').modal('hide');  // 모달 닫기
+        })
         
-    $("#postingbtn").click(async function () {
-        let imageUrl = $('#imageUrl').val();
-        let name = $('#name').val();
-        let mbti = $('#mbti').val();
-        let blogUrl = $('#blogUrl').val();
-        let once = $('#once').val();
-        let bio = $('#bio').val();
-
-        let doc = {
-            'imageUrl': imageUrl,
-            'name': name,
-            'mbti': mbti,
-            'blogUrl': blogUrl,
-            'once': once,
-            'bio' : bio
-        };
-        await addDoc(collection(db, "miniProject"), doc);
-        alert('저장 완료!');
-        window.location.reload();
-    })
-    // 명명규칙 이름 : name, 이미지 주소 : imageUrl, 블로그 주소 blogUrl : blogUrl, mbti : mbti
-    // db, "miniProject" -> 가명
-
-    $("#savebtn").click(async function () {
-        $('#postingbox').toggle();
-    })    
-    </script> 
+    </script>
 </head>
 
 <body>
@@ -223,58 +248,59 @@
     <div class="intro-body">
         <img
             src="https://media.istockphoto.com/id/1346426433/photo/cute-blue-robot-holding-serving-cloche-3d.jpg?s=612x612&w=0&k=20&c=u6T8xFueGlv-M2Neqxu1EVV5PL7abyj-dybPRaIv2-A=" />
-        <div class="intro-content">        
+        <div class="intro-content">
             <p>안녕하세요! 저희는 코딩을 요리하는 사람들의 모임인 코딩쿠킹스 입니다!</p>
-            <p>고객만족의 만족을 위해 코드 하나하나 정성스럽게 조리하여 훌륭한 프로젝트로 보여드리겠습니다.</p>
+            <P>재료를 손질하고 조리하여 훌륭한 요리를 만드는 요리사들 처럼</P>
+            <p>코드 하나하나 정성스럽게 다루어 훌륭한 결과물로 보여드리겟습니다</p>
             <p>그럼 저희 쉐프님들을 만나러 가보실까요?</p>
         </div>
     </div>
     <div class="join-btn">
-        <button type="button" class="btn btn-primary btn-lg">쉐프로 참여하기</button> 
+        <button type="button" id="savebtn" class="btn btn-primary">쉐프로 참여하기</button>
     </div>
-     
-     <!-- <div class="mypostbox">
-        <h4>쉐프님 어서오세요!</h4>
 
-        <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" />
-            <label for="floatingInput">이미지를 넣어줘</label>
-        </div>
+    <div id="join-modal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div id="postingbox" class="myTeamMember modal-content">
+                <div class="form-floating mb-3">
+                    <input type="email" id="imageUrl" class="form-control" placeholder="이미지">
+                    <label for="floatingInput">이미지 </label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="name" placeholder="이름">
+                    <label for="floatingInput">이름 </label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="mbti" placeholder="MBTI">
+                    <label for="floatingInput">MBTI </label>
+                </div>
 
-        <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" />
-            <label for="floatingInput">이름을 넣어줘</label>
-        </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="blogUrl" placeholder="블로그">
+                    <label for="floatingInput">블로그 </label>
+                </div>
 
-        <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" />
-            <label for="floatingInput">MBTI를 넣어줘</label>
-        </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="once" placeholder="한마디">
+                    <label for="floatingInput">한마디 </label>
+                </div>
 
-        <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" />
-            <label for="floatingInput">블로그를 넣어줘</label>
+                <div class="form-floating mb-3">
+                    <input type="textarea" class="form-control" id="bio" placeholder="자기소개">
+                    <label for="floatingInput">자기소개 </label>
+                </div>
+                
+                <div class="mybtn">
+                    <button id="postingbtn" type="button" class="btn btn-primary">기록하기</button>
+                    <button type="button" class="btn btn-outline-primary" id="save-close-btn">닫기</button>
+                </div>
+            </div>
         </div>
-
-        <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" />
-            <label for="floatingInput">한마디를 넣어줘</label>
-        </div>
-
-        <div class="form-floating mb-3">
-            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" />
-            <label for="floatingInput">자기소개를 넣어줘</label>
-        </div>
-
-        <div class="mybtn">
-            <button type="button" class="btn btn-primary">참여하기</button>
-            <button type="button" class="btn btn-outline-primary">나가기</button>
-        </div>
-    </div> -->
+    </div>
 
     <div class="team-cards">
         <div id="member-card" class="row row-cols-1 row-cols-md-4 g-4">
-     <!--     <div class="col">
+            <!--     <div class="col">
             <div class="card h-100">
               <img
                 src="https://movie-phinf.pstatic.net/20210728_221/1627440327667GyoYj_JPEG/movie_image.jpg"
@@ -289,5 +315,6 @@
             </div>
           </div>
         </div> -->
-      </div>
+        </div>
+
 </html>
