@@ -247,7 +247,9 @@ const firebaseConfig = {
 
  // 날짜 문자열을 Date 객체로 변환
  function convertToDate(str) {
-   const [datePart, timePart] = str.split(" 오후 ");
+  const [datePart, timePart] = str.split(
+          str.indexOf("오후") !== -1 ? " 오후 " : " 오전 "
+        );
    const [year, month, day] = datePart.split(". ").map(Number);
    const [hour, minute, second] = timePart.split(":").map(Number);
 
